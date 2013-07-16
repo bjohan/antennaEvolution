@@ -1,5 +1,8 @@
 from band import *
 from element import *
+from drivenElement import *
+from antenna import *
+from compute import *
 #Evolve a multibad moxon antenna.
 
 band40Meter = Band(7.0,7.2, '40 meter')
@@ -24,3 +27,14 @@ element1 = Element(3.0, 2.0, 'north', 0);
 element2 = Element(3.0, 2.0, 'south', 0);
 print element1
 print element2
+
+print "Adding elements to antenna"
+ant = Antenna()
+ant.addElement(element1)
+ant.addElement(element2)
+
+print ant
+
+cpt = Compute()
+cpt.setAntenna(ant)
+cpt.getNecContextWithGeometry()
