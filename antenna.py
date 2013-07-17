@@ -13,11 +13,10 @@ class Antenna:
 		self.elements=[]
 		self.addElements(elements)
 
-	def putElementsInContext(self, ctx, tagStart = 0):
-		lastTag = tagStart
+	def addNecGeometry(self, fg):
 		for element in self.elements:
-			(ctx, lastTag) = element.putInContext(ctx, lastTag)
-		return ctx
+			fg = element.addNecGeometry(fg)
+		return fg
 
 	def __str__(self):
 		s = 'Antenna structure: \n';

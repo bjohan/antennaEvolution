@@ -23,8 +23,8 @@ for b in bands:
 	print b
 	
 
-element1 = Element(3.0, 2.0, 'north', 0);
-element2 = Element(3.0, 2.0, 'south', 0);
+element1 = DrivenElement(3.0, 2.0, 'north', 0);
+element2 = Element(3.0, 2.5, 'south', 2);
 print element1
 print element2
 
@@ -37,4 +37,4 @@ print ant
 
 cpt = Compute()
 cpt.setAntenna(ant)
-cpt.getNecContextWithGeometry()
+cpt.addNecGeometry()

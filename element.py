@@ -14,29 +14,22 @@ class Element:
 		s+="\n\t position on boom: "+str(self.position)+"\n"
 		return s
 
-	def putInContext(self, ctx, tagStart):
-		geo = ctx.get_geometry()
+	def addNecGeometry(self, g):
 		#First comptute some coordinates element is created in xy-plane
 		#positive y is "north" direction
 		xlength = 0.5*self.straightLength
 		ylength = 0.5*(self.wireLength-self.straightLength)
-		print "Adding moxon element. half width",xlength,"fold",ylength,
-		print "first tag", tagStart
+		print "Adding moxon element. half width",xlength,"fold",ylength
 		if self.foldDirection == 'south':
 			ylength = -ylength
 		
 		#First add straight wire
-		geo.wire(tagStart, 36, -xlength, self.position, 0,
-					xlength, self.position, 0, self.radius,
-					1.0, 1.0)
-		tagStart+=1
+		g.wire(-xlength, self.position, 0, xlength, 
+					self.position, 0, self.radius)
 		#Add east fold
-		geo.wire(tagStart, 36, -xlength, self.position, 0,
-					-xlength, self.position+ylength, 0,
-					self.radius, 1.0, 1.0)
-		tagStart+=1
+		g.wire(-xlength, self.position, 0,
+					-xlength, self.position+ylength, 0, self.radius)
 		#Add west fold
-		geo.wire(tagStart, 36, xlength, self.position, 0,
-					xlength, self.position+ylength, 0,
-					self.radius, 1.0, 1.0)
-		return (ctx, tagStart)	
+		g.wire(xlength, self.position, 0,
+					xlength, self.position+ylength, 0, self.radius)
+		return g	
