@@ -37,4 +37,4 @@ print ant
 
 cpt = Compute()
 cpt.setAntenna(ant)
-cpt.addNecGeometry()
+cpt.compute()
