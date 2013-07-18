@@ -7,6 +7,70 @@ class NecFileParser:
 	def parse(self):
 		print "Data is", len(self.data), "bytes"
 		self.splitFrequencies()
+		for frequency in self.frequencyData:
+			self.parseFrequency(frequency)
+
+	def parseFrequency(self, frqDat):
+		frequency = self.getFrequency(frqDat)
+		print "Got frequency:", frequency
+		impedance = self.getAntennaImpedance(frqDat)
+		#currents = self.getAntennaCurrents(frqDat)
+		#powerBudget = self.getPowerBudget(frqDat)
+		radiationPattern = self.getRadiationPattern(frqDat)
+
+	def getFrequency(self, dat):
+		for line in dat.splitlines():
+			if "FREQUENCY : " in line:
+				return float(line.split()[2])
+
+	def getAntennaImpedance(self, dat):
+		section = self.getSection(dat, "ANTENNA INPUT PARAMETERS")
+		lines = section.splitlines()
+		for i in range(len(lines)):
+			if "IMAGINARY" in lines[i]:
+				break
+		else:
+			return
+		values = lines[i+1].split();
+		valDict = {}
+		valDict['voltage real'] = float(values[2])
+		valDict['voltage imaginary'] = float(values[3])
+		valDict['current real'] = float(values[4])
+		valDict['current imaginary'] = float(values[5])
+		valDict['impedance real'] = float(values[6])
+		valDict['impedance imaginary'] = float(values[7])
+		valDict['admittance real'] = float(values[8])
+		valDict['admittance imaginary'] = float(values[9])
+		valDict['power'] = float(values[10])
+		return valDict
+	
+	def getRadiationPattern(self, dat):
+		section = self.getSection(dat, "RADIATION PATTERNS")
+		lines = section.splitlines()
+		for i in range(len(lines)):
+			if "VOLTS/M" in lines[i]:
+				break
+		else:
+			return
+		parsedData = []
+		for i in range(i+1, len(lines)):
+			tokens = lines[i].split()
+			if len(tokens) == 12:
+				d = {}
+				d['azimuth'] = float(tokens[0])
+				d['elevation'] = float(tokens[1])
+				d['major db'] = float(tokens[2])
+				d['minor db'] = float(tokens[3])
+				d['total db'] = float(tokens[4])
+				d['axial ratio'] = float(tokens[5])
+				d['tilt degrees'] = float(tokens[6])
+				d['sense'] = tokens[7]
+				d['e azimuth magnitude volts/m'] = float(tokens[8])
+				d['e azimuth phase degrees'] = float(tokens[9])
+				d['e elevation magnitude volts/m'] = float(tokens[10])
+				d['e elevation phase degrees'] = float(tokens[11])
+				parsedData.append(d)
+		return parsedData	
 
 	def splitFrequencies(self):
 		token = "-------- FREQUENCY --------"
@@ -27,7 +91,6 @@ class NecFileParser:
 		print self.frequencyData[0]
 		print "Looking for power budget"
 		dat = self.getSection(self.frequencyData[0], 'RADIATION')
-		print dat
 
 	def getSection(self, data, section):
 		preamble = '-'*7+' '
@@ -38,7 +101,6 @@ class NecFileParser:
 			return None
 		post = start+len(sectionStart)*2
 		last = data[post:].find(preamble)
-		print start, post, last
 		if last < 0:
 			return data[start:]
 			
