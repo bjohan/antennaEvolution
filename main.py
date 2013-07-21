@@ -3,6 +3,7 @@ from element import *
 from drivenElement import *
 from antenna import *
 from compute import *
+from analyzer import *
 #Evolve a multibad moxon antenna.
 
 band40Meter = Band(7.0,7.2, '40 meter')
@@ -19,22 +20,25 @@ band2Meter = Band(144.0,146.0, '2 meter')
 bands = [band40Meter, band30Meter, band20Meter, band17Meter, band15Meter,
 	band12Meter, band10Meter, band6Meter, band2Meter]
 
-for b in bands:
-	print b
+#for b in bands:
+#	print b
 	
 
 element1 = DrivenElement(3.0, 2.0, 'north', 0);
 element2 = Element(3.0, 2.5, 'south', 2);
-print element1
-print element2
+#print element1
+#print element2
 
 print "Adding elements to antenna"
 ant = Antenna()
 ant.addElement(element1)
 ant.addElement(element2)
 
-print ant
+#print ant
 
 cpt = Compute()
 cpt.setAntenna(ant)
-cpt.compute()
+result = cpt.compute()
+print result
+analyzer = Analyzer(result)
+analyzer.getRadiationPatternMax()

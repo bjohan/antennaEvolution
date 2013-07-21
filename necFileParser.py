@@ -1,5 +1,9 @@
+from simulationResult import *
+
+
 class NecFileParser:
 	def __init__(self, fileName=None):
+		self.simulationResult = SimulationResult()
 		f = open(fileName)
 		self.data = f.read()
 		self.parse()
@@ -8,15 +12,16 @@ class NecFileParser:
 		print "Data is", len(self.data), "bytes"
 		self.splitFrequencies()
 		for frequency in self.frequencyData:
-			self.parseFrequency(frequency)
+			self.simulationResult.addFrequency(self.parseFrequency(frequency))
 
 	def parseFrequency(self, frqDat):
-		frequency = self.getFrequency(frqDat)
-		print "Got frequency:", frequency
-		impedance = self.getAntennaImpedance(frqDat)
+		fr = FrequencyResult()
+		fr.setFrequency(self.getFrequency(frqDat))
+		fr.setImpedance(self.getAntennaImpedance(frqDat))
 		#currents = self.getAntennaCurrents(frqDat)
 		#powerBudget = self.getPowerBudget(frqDat)
-		radiationPattern = self.getRadiationPattern(frqDat)
+		fr.setRadiationPattern(self.getRadiationPattern(frqDat))
+		return fr
 
 	def getFrequency(self, dat):
 		for line in dat.splitlines():
@@ -75,7 +80,7 @@ class NecFileParser:
 	def splitFrequencies(self):
 		token = "-------- FREQUENCY --------"
 		last = self.data.find(token);
-		print "Skipping", last+len(token), "bytes at start"
+		#print "Skipping", last+len(token), "bytes at start"
 		self.frequencyData = []
 		dat = self.data[last+len(token):]	
 		while True:
@@ -85,12 +90,6 @@ class NecFileParser:
 			self.frequencyData.append(dat[:nxt])
 			dat = dat[nxt+len(token):]
 
-		print "Found data for", len(self.frequencyData), "frequencies"
-		for d in self.frequencyData:
-			print "length", len(d)
-		print self.frequencyData[0]
-		print "Looking for power budget"
-		dat = self.getSection(self.frequencyData[0], 'RADIATION')
 
 	def getSection(self, data, section):
 		preamble = '-'*7+' '
