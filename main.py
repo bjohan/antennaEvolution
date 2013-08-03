@@ -4,6 +4,7 @@ from drivenElement import *
 from antenna import *
 from compute import *
 from analyzer import *
+from plothelper import *
 #Evolve a multibad moxon antenna.
 
 band40Meter = Band(7.0,7.2, '40 meter')
@@ -40,5 +41,17 @@ cpt = Compute()
 cpt.setAntenna(ant)
 result = cpt.compute()
 print result
+print "frequency", result.frequencies[0].frequency
+azg = result.frequencies[0].getAzimuthGrid()
+print "azimuths", azg
+elg = result.frequencies[0].getElevationGrid()
+print "elevations", elg
+vals = result.frequencies[0].getMajorDbGrid()
 analyzer = Analyzer(result)
 analyzer.getRadiationPatternMax()
+print "frontal gain", result.frequencies[0].getFrontalGain()
+print "radiated power", result.frequencies[0].getRadiatedPower()
+
+analyzer.getFigureOfMerit()
+ph = PlotHelper()
+ph.plotColorMap(azg, elg, vals)

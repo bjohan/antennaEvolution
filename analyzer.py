@@ -8,7 +8,7 @@ class Analyzer:
 			maximums.append(
 				self.getMaxFromListDict(
 					f.radiationPattern, 'total db'))
-		print maximums
+		print "list of maximums", maximums
 
 	def getMaxFromListDict(self, listDict, key):
 		ma = None
@@ -17,6 +17,51 @@ class Analyzer:
 			if ent[key] > ma:
 				ma = ent[key]
 
-		return ma 
+		return ma
+	def getFigureOfMerit(self):
+		gainMax = None
+		gainMin = None
+		powerMax = None
+		powerMin = None
+		powerAvg = 0
+		gainAvg = 0
+		for f in self.result.frequencies:
+			g = f.getFrontalGain()
+			p = f.getRadiatedPower()
+			if gainMax == None:
+				gainMax = g
+				gainMin = g
+			if powerMax == None:
+				powerMax = p
+				powerMin = p
+			powerAvg+=p
+			gainAvg+=g
+			powerMax = max(powerMax, p)
+			powerMin = min(powerMin, p)
+			gainMax = max(gainMax, g)
+			gainMin = min(gainMin, g)
+		deltaGain = gainMax-gainMin
+		deltaPower = powerMax-powerMin
+		gainAvg /= float(len(self.result.frequencies))
+		powerAvg /= float(len(self.result.frequencies))
+		print "Power--> Avg:",powerAvg,"max:", powerMax, "min:", powerMin, "delta:", deltaPower
+		print "Gain--> Avg:",gainAvg,"max:", gainMax, "min:", gainMin, "delta:", deltaGain
+		fom = powerMax*gainMax/(deltaPower*deltaGain)
+		print "Figure of merit:", fom
+		return fom
+
+	#All methods below return max, min and avg
+	def getFrontalGain(self):
+		pass 
+	def getFrontalGainElevationLobeWidth(self):
+		pass 
+	def getFrontalGainAzimuthLobeWidth(self):
+		pass 
+	def getFrontToBackRatio(self):
+		pass
+	def getVSWR(self):
+		pass
+	def getImpedance(self):
+		pass
 			
 			

@@ -62,8 +62,8 @@ class NecFileParser:
 			tokens = lines[i].split()
 			if len(tokens) == 12:
 				d = {}
-				d['azimuth'] = float(tokens[0])
-				d['elevation'] = float(tokens[1])
+				d['elevation'] = float(tokens[0])-90.0
+				d['azimuth'] = float(tokens[1])
 				d['major db'] = float(tokens[2])
 				d['minor db'] = float(tokens[3])
 				d['total db'] = float(tokens[4])

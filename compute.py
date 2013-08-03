@@ -16,8 +16,8 @@ class Compute:
 		fg = self.antenna.addNecGeometry(fg)
 		fg.geometryEnd()
 		fg.end()
-		fg.frequency(10.0, 100.2, 101)
-		fg.radiationPattern(0, 180, 10, 0, 360, 10)
+		fg.frequency(19.0, 20.0, 11)
+		fg.radiationPattern(-180, 180, 21, 0, 180, 21)
 		print "Writing NEC file"
 		fg.write()
 		print "Running NEC"
