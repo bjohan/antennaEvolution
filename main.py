@@ -34,7 +34,7 @@ print "Adding elements to antenna"
 ant = Antenna()
 ant.addElement(element1)
 ant.addElement(element2)
-
+ant.addBands(bands)
 #print ant
 
 cpt = Compute()

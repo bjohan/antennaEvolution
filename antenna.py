@@ -2,6 +2,10 @@ class Antenna:
 	def __init__(self):
 		self.elements = [];
 		self.name = "Default antenna name"
+		self.bands = []
+
+	def addBands(self, bands):
+		self.bands+=bands
 
 	def addElement(self, element):
 		self.elements.append(element)
@@ -17,6 +21,8 @@ class Antenna:
 		for element in self.elements:
 			fg = element.addNecGeometry(fg)
 		return fg
+
+	
 
 	def __str__(self):
 		s = 'Antenna structure: \n';
