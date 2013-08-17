@@ -8,7 +8,8 @@ class Analyzer:
 			maximums.append(
 				self.getMaxFromListDict(
 					f.radiationPattern, 'total db'))
-		print "list of maximums", maximums
+		#print "list of maximums", maximums
+		return maximums
 
 	def getMaxFromListDict(self, listDict, key):
 		ma = None
@@ -19,6 +20,8 @@ class Analyzer:
 
 		return ma
 	def getFigureOfMerit(self):
+		if self.result == None:
+			return -1
 		gainMax = None
 		gainMin = None
 		powerMax = None
@@ -44,10 +47,10 @@ class Analyzer:
 		deltaPower = powerMax-powerMin
 		gainAvg /= float(len(self.result.frequencies))
 		powerAvg /= float(len(self.result.frequencies))
-		print "Power--> Avg:",powerAvg,"max:", powerMax, "min:", powerMin, "delta:", deltaPower
-		print "Gain--> Avg:",gainAvg,"max:", gainMax, "min:", gainMin, "delta:", deltaGain
-		fom = powerMax*gainMax/(deltaPower*deltaGain)
-		print "Figure of merit:", fom
+		#print "Power--> Avg:",powerAvg,"max:", powerMax, "min:", powerMin, "delta:", deltaPower
+		#print "Gain--> Avg:",gainAvg,"max:", gainMax, "min:", gainMin, "delta:", deltaGain
+		fom = powerMax*gainMax/(1.0+abs(deltaPower*deltaGain))
+		#print "Figure of merit:", fom
 		return fom
 
 	#All methods below return max, min and avg

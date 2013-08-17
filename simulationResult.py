@@ -65,6 +65,9 @@ class SimulationResult:
 	def addFrequency(self, f):
 		self.frequencies.append(f)
 
+	def append(self, simulationResult):
+		self.frequencies+=simulationResult.frequencies
+
 	def __str__(self):
 		s= "Simulation result for "+str(len(self.frequencies))+" frequencies"
 		return s

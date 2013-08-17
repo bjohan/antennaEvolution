@@ -9,7 +9,7 @@ class NecFileParser:
 		self.parse()
 	
 	def parse(self):
-		print "Data is", len(self.data), "bytes"
+		#print "Data is", len(self.data), "bytes"
 		self.splitFrequencies()
 		for frequency in self.frequencyData:
 			self.simulationResult.addFrequency(self.parseFrequency(frequency))
