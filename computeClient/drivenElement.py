@@ -13,4 +13,9 @@ class DrivenElement(Element):
 
 def makeDriven(e):
 	return DrivenElement(e.bendLength, e.straightLength, e.foldDirection,
-				e.position)	
+				e.position)
+
+def makePassive(e):
+	return Element(e.bendLength, e.straightLength, e.foldDirection,
+				e.position)
+		

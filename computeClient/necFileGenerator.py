@@ -12,7 +12,7 @@ class NecFileGenerator:
 	def comment(self, comment):
 		self.commentData+="CM "+comment+"\n"
 
-	def wire(self, x1, y1, z1, x2, y2, z2, radius, segments = 36):
+	def wire(self, x1, y1, z1, x2, y2, z2, radius, segments = 35):
 		t = self.tag
 		self.tag+=1
 		self.geometryData+="GW\t%d\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n"%(
@@ -41,7 +41,7 @@ class NecFileGenerator:
 		deltaAzi = float(aziStop-aziStart)/(aziSteps-1)
 		deltaEle = float(eleStop-eleStart)/(eleSteps-1)
 		self.radiationData+="RP\t%d\t%d\t%d\t%d\t%e\t%e\t%e\t%e\t%e\t%e\n"%(
-			0, eleSteps, aziSteps, 0, eleStart, aziStart, deltaEle, deltaAzi,0.0,0.0)
+			0, eleSteps, aziSteps, 1400, eleStart, aziStart, deltaEle, deltaAzi,0.0,0.0)
 
 	def __str__(self):
 		s = self.commentData

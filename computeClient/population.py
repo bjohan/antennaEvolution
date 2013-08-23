@@ -2,7 +2,7 @@ import random
 import os
 from necFileGenerator import *
 class Population:
-	def __init__(self, race = None, computer = None, size = 100, mutationRate = 0.05, 
+	def __init__(self, race = None, computer = None, size = 25, mutationRate = 0.05, 
 			survivalRate = 0.8, initialPopulation = []):
 		self.it = 0
 		self.size = size

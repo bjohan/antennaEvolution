@@ -99,9 +99,15 @@ class Antenna(Individual):
 		if len(self.elements) == 0:
 			print "WARNING, antenna has 0 elements"
 		nDriven = 0
+		n = 0
 		for e in self.elements:
 			if type(e) == DrivenElement:
+				if nDriven >= 1:
+					print "Too many driven, making passive"
+					self.elements[n] = makePassive(
+						self.elements[n])
 				nDriven += 1
+			n+=1
 		if nDriven == 0:
 			n = random.choice(range(len(self.elements)))
 			self.elements[n] = makeDriven(self.elements[n])

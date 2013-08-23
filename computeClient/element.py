@@ -82,7 +82,7 @@ class Element:
 			op = round(random.random()*4)
 			newGeom = random.random()*self.maxGeom
 			if op == 1:
-				self.straightLength = newGeom
+				self.straightLength = newGeom+0.1
 			if op == 2:
 				self.bendLength = newGeom
 			if op == 3:
