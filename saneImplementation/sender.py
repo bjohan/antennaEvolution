@@ -12,7 +12,7 @@ class Sender(threading.Thread):
 		self.start()
 
 	def sendMessage(self, msg):
-		self.txq.put(msg.toString())
+		self.txq.put(msg)
 
 	def run(self):
 		while self.do:

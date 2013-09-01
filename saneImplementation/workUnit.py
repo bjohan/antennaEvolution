@@ -14,7 +14,7 @@ class WorkUnit:
 
 	@classmethod
 	def fromString(cls,string):
-		seqNum = struct.unpack("l", string[0:8])
+		seqNum = struct.unpack("l", string[0:4])
 		work = string[8:]
 		return cls(work, seqNum)
 
