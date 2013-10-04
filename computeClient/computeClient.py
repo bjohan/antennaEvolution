@@ -19,20 +19,16 @@ def printHelp():
 
 
 def main():
-#	serverAddress = parseArguments()
-	ct = ConnectionThread(parseArguments())
+	cc = ComputeConnection(parseArguments())
 	while True:
 		cmd = raw_input('> ')
 		print cmd
 		if cmd == 'quit':			
-			ct.stop()
+			cc.stop()
 			break
-
-#	print "Connecting to", serverAddress
-#	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#	status = s.connect((serverAddress, 0xBEEF))
-#	print "Connection status", status
-#	s.send('Hello from compute client')
-
+		if cmd == 'do':
+			job = cc.getJob()
+			if job != '':
+				cc.sendResult('completed'+job) 
 
 main()

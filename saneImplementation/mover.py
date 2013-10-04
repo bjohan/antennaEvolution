@@ -15,6 +15,7 @@ class Mover(threading.Thread):
 			if d != None:
 				print "src", self.source, "dst", self.sink
 				print self.msg
+				print "got:", d
 				self.sink.put(d)
 			else:
 				time.sleep(0.2)

@@ -1,8 +1,9 @@
 import sys
-import socket
 import os
 sys.path.append(os.path.abspath('../protocol'))
 from communicatorThread import *
+from job import *
+import socket
 
 class EvolverConnection(CommunicatorThread):
 	def __init__(self, serverAddr):
@@ -16,4 +17,8 @@ class EvolverConnection(CommunicatorThread):
 	def processMessage(self, msg):
 		print "TODO, process message for evolver client"
 		print "Got message:", msg
+
+	def sendJob(self, job):
+		print "Sending job", job.toString()
+		self.sendMessage(job.toString())
 		

@@ -28,7 +28,7 @@ class Receiver(threading.Thread):
 				pass
 		print "Receiver thread exited"
 
-	def getMessageNoBlock(self, blocking = False):
+	def getMessage(self, blocking = False):
 		if blocking:
 			return self.rxq.get()
 

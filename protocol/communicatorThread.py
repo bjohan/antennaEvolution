@@ -5,6 +5,7 @@ class CommunicatorThread(threading.Thread):
 		self.continueRunning = True
 		self.socket = socket
 		self.socket.setblocking(0)
+		self.socket.settimeout(0.1)
 		self.d = Decoder()
 		self.e = Encoder()
 		threading.Thread.__init__(self)
@@ -23,9 +24,12 @@ class CommunicatorThread(threading.Thread):
 					self.d.appendReceivedData(data)
 				msg = self.d.getMessage()
 				if len(msg) > 0:
+					print "Message processor called"
 					self.processMessage(msg)
+					print "Message processor returned"
 			except:
 				pass
+		print "Thread stopped"
 
 	def sendMessage(self, data):
 		self.e.appendMessage(data)

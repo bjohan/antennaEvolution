@@ -18,7 +18,7 @@ class WorkerListener(ConnectionListener):
 	def get(self):
 		for c in self.connections:
 			try:
-				data  = c.rx.rxq.get_nowait()
+				data  = c.rx.getMessage()
 				return data
 			except Queue.Empty, e:
 				pass
@@ -35,10 +35,10 @@ class WorkerListener(ConnectionListener):
 			print "Sending job to worker", self.nextWorker
 			return self.connections[self.nextWorker]
 		
-	def put(self, workUnit):
+	def put(self, msg):
 		c = self.getNextWorkerConnection()
 		if c != None:
-			c.tx.txq.put(Message(2,workUnit.toString()))
+			c.tx.txq.put(msg)
 		else:
 			print "No workers, work unit discarded FIXTHIS!"
 		

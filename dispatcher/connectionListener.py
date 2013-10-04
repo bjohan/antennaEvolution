@@ -31,7 +31,7 @@ class ConnectionListener(threading.Thread):
 				print "accept called"
 				
 				#conn.close()
-			except Exception, e:
+			except socket.error, e:
 				#print "Exception while accepting connection", e
 				time.sleep(1)
 	def accept(self, connection):
@@ -41,6 +41,9 @@ class ConnectionListener(threading.Thread):
 	def stop(self):
 		print "Stopping connection listener for:", self.name
 		self.continueRunning = False
+		n = 0
 		for c in self.connections:
+			print "Stopping connection",n
+			n+=1
 			c.stop()
 

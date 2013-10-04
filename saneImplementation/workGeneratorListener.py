@@ -17,14 +17,15 @@ class WorkGeneratorListener(ConnectionListener):
 		return Communicator(conn)
 		#return WorkGeneratorConnection(conn)
 
-	def createAndRegisterWu(self, wuData, connId):
+	def registerWu(self, wuData, connId):
 		print "WU data:", wuData
 		wu = WorkUnit.fromString(wuData)
 		wuNewId = self.currentWorkUnitId
 		self.currentWorkUnitId += 1
 		self.idMap[wuNewId] = (wu.seqNum, connId)
+		print "idMap updated", self.idMap
 		wu.seqNum = wuNewId
-		return wu
+		return Message(1, wu.toString())
 
 	def get(self):
 		nConn = len(self.connections)
@@ -36,7 +37,7 @@ class WorkGeneratorListener(ConnectionListener):
 			try:
 				data = self.connections[i].rx.rxq.get_nowait()
 				self.connToPoll = i +1
-				return self.createAndRegisterWu(data.data, i)
+				return self.registerWu(data.data, self.connections[i].id)
 			except Queue.Empty, e:
 				pass
 				
@@ -44,14 +45,22 @@ class WorkGeneratorListener(ConnectionListener):
 
 	def getConnection(self, connId):
 		for c in self.connections:
+			print "c.id", c.id
 			if c.id == connId:
 				return c
 		else:
 			print "No such connection", connId
 
-	def put(self, data):
-		wu = WorkUnit.fromString(data)
+	def put(self, msgIn):
+		wu = WorkUnit.fromString(msgIn.data)
+		print "reading from idMap", self.idMap
+		print "looking for key", wu.seqNum
 		(seqNum, connId) = self.idMap[wu.seqNum]
 		wu.seqNum = seqNum
+		msg = Message(1, wu.toString())
 		c = self.getConnection(connId)
-		c.tx.txq.put(wu.toString)
+		#print dir(msg)
+		#print "="*10
+		#print dir(msg.data)
+		print "Putting result in queue", msg
+		c.tx.sendMessage(msg)
