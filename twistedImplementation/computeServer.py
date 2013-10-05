@@ -1,7 +1,9 @@
 from twisted.protocols import basic
 from twisted.internet import protocol
-from dictUtils import *
+import pickle
 computeNumber = 0
+
+
 class ComputeServer(basic.LineReceiver):
 
     def connectionMade(self):
@@ -14,15 +16,15 @@ class ComputeServer(basic.LineReceiver):
         self.factory.clients.remove(self)
 
     def lineReceived(self, line):
-        message = dictFromString(line)
-        print "got message:", message
-        #print "got result", repr(line)
-            #for c in self.factory.clients:
-        #   c.message(line)
+        message = pickle.loads(line)
+        if 'result' in message:
+            self.factory.workGeneratorFactory.postResult(message)
+        else:
+            print "got something from compute client which is not a result:"
+            print message
 
     def message(self, message):
-        #self.transport.write(message + '\n')
-        self.sendLine(dictToString(message))
+        self.sendLine(pickle.dumps(message))
 
     def sendWorkUnit(self, wu):
         print "Sending work unit", wu
@@ -46,8 +48,7 @@ class ComputeServerFactory(protocol.ServerFactory):
     def postWorkUnit(self, wu):
         nClients = len(self.clients)
         if nClients > 0:
-            self.computer = (self.computer+1)%nClients
+            self.computer = (self.computer + 1) % nClients
             self.clients[self.computer].sendWorkUnit(wu)
         else:
             print "No clients available. TODO implement buffering"
-

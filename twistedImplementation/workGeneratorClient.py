@@ -3,7 +3,7 @@ from twisted.protocols.basic import LineReceiver
 from twisted.internet import reactor
 from twisted.internet import stdio
 import commandLine
-import dictUtils
+import pickle
 
 
 class WorkGeneratorClient(LineReceiver):
@@ -15,15 +15,14 @@ class WorkGeneratorClient(LineReceiver):
         self.message({'work unit': "A piece of hard work"})
 
     def lineReceived(self, line):
-        print "raw data", line
-        message = dictUtils.stringToDict(line)
+        message = pickle.loads(line)
         print "receive:", message
 
     def disconnectWorkGeneratorClient(self):
         self.transport.loseConnection()
 
     def message(self, message):
-        self.sendLine(dictUtils.dictToString(message))
+        self.sendLine(pickle.dumps(message))
 
 
 class WorkGeneratorClientFactory(ClientFactory):

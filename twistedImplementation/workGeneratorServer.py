@@ -1,6 +1,6 @@
 from twisted.internet import protocol
 from twisted.protocols import basic
-import dictUtils
+import pickle
 
 
 class WorkGeneratorServer(basic.LineReceiver):
@@ -14,16 +14,18 @@ class WorkGeneratorServer(basic.LineReceiver):
         self.factory.clients.remove(self)
 
     def lineReceived(self, line):
-        message = dictUtils.dictFromString(line)
-        print "got:", message
+        message = pickle.loads(line)
         if 'work unit' in message:
             print "Received message is a work unit"
             print "Augmenting work unit data with work generator id"
-            message['generator id'] = str(self.workGeneratorId)
-        self.factory.computeClientFactory.postWorkUnit(message)
+            message['generator id'] = self.workGeneratorId
+            self.factory.computeClientFactory.postWorkUnit(message)
+        else:
+            print "work generater sent something that is not a work unit:"
+            print message
 
     def message(self, message):
-        self.sendLine(dictUtils.dictToString(message))
+        self.sendLine(pickle.dumps(message))
 
 
 class WorkGeneratorServerFactory(protocol.ServerFactory):
@@ -40,4 +42,14 @@ class WorkGeneratorServerFactory(protocol.ServerFactory):
         self.computeClientFactory = factory
 
     def postResult(self, result):
+        print "Returning result to work generator who created work unit"
+        if 'result' in result:
+            generatorId = result['generator id']
+            for client in self.clients:
+                if client.workGeneratorId == generatorId:
+                    print "Found client", generatorId, "sending result"
+                    client.message(result)
+        else:
+            print result
+            print "the above data does not contain a result"
         print "TODO implement post result"
