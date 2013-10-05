@@ -1,16 +1,11 @@
-"""The most basic chat protocol possible.
-
-run me with twistd -y chatserver.py, and then connect with multiple
-telnet clients to port 1025
-"""
-
+from twisted.internet import protocol
 from twisted.protocols import basic
-from dictUtils import *
+import dictUtils
 
 
 class WorkGeneratorServer(basic.LineReceiver):
     def connectionMade(self):
-	self.workGeneratorId = self.factory.getNewConnectionNumber()
+        self.workGeneratorId = self.factory.getNewConnectionNumber()
         print "new work generator connected", self.workGeneratorId
         self.factory.clients.append(self)
 
@@ -19,27 +14,30 @@ class WorkGeneratorServer(basic.LineReceiver):
         self.factory.clients.remove(self)
 
     def lineReceived(self, line):
-	message = dictFromString(line)
+        message = dictUtils.dictFromString(line)
         print "got:", message
-        #for c in self.factory.clients:
-        #    c.message(line)
+        if 'work unit' in message:
+            print "Received message is a work unit"
+            print "Augmenting work unit data with work generator id"
+            message['generator id'] = str(self.workGeneratorId)
+        self.factory.computeClientFactory.postWorkUnit(message)
 
     def message(self, message):
-        #self.transport.write(message + '\n')
-	self.sendLine(dictToString(message))
+        self.sendLine(dictUtils.dictToString(message))
+
 
 class WorkGeneratorServerFactory(protocol.ServerFactory):
-	def __init__(self):
-		self.connectionNumber = 0
-		self.computeClientFactory = None
+    def __init__(self):
+        self.connectionNumber = 0
+        self.computeClientFactory = None
 
-	def getNewConnectionNumber(self):
-		n = self.connectionNumber
-		self.connectionNumber += 1
-		return n
+    def getNewConnectionNumber(self):
+        n = self.connectionNumber
+        self.connectionNumber += 1
+        return n
 
-	def setComputeClientFactory(self, factory):
-		self.computeClientFactory = factory
-	
-	def postResult(self, result):
-		print "TODO implement post result"
+    def setComputeClientFactory(self, factory):
+        self.computeClientFactory = factory
+
+    def postResult(self, result):
+        print "TODO implement post result"
