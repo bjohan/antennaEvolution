@@ -18,6 +18,7 @@ class ComputeServer(basic.LineReceiver):
     def lineReceived(self, line):
         message = pickle.loads(line)
         if 'result' in message:
+            message['number of clients'] = len(self.factory.clients)
             self.factory.workGeneratorFactory.postResult(message)
         else:
             print "got something from compute client which is not a result:"

@@ -1,12 +1,10 @@
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineReceiver
 from twisted.internet import reactor
-from twisted.internet import stdio
-import commandLine
 import pickle
 
 
-class WorkGeneratorClient(LineReceiver):
+class WorkGeneratorClientProtocol(LineReceiver):
     def connectionMade(self):
         self.factory.clientConnection = self
         self.message({'info': "Work generator client"})
@@ -26,26 +24,19 @@ class WorkGeneratorClient(LineReceiver):
 
 
 class WorkGeneratorClientFactory(ClientFactory):
-    protocol = WorkGeneratorClient
+    protocol = WorkGeneratorClientProtocol
 
     def __init__(self):
         self.clientConnection = None
 
 
-def myExit(args):
-    print "Stopping reactor"
-    reactor.stop()
+class WorkGeneratorClient:
+    def __init__(self, serverHostName, port, generator, evaluator):
+        self.factory = WorkGeneratorClientFactory()
+        reactor.connectTCP(serverHostName, port, self.factory)
 
+    def run(self):
+        reactor.run()
 
-def sendWork(args):
-    factory.clientConnection.sendWork()
-
-commands = {
-    "quit": myExit,
-    "sw": sendWork}
-
-
-factory = WorkGeneratorClientFactory()
-reactor.connectTCP('localhost', 0xdead, factory)
-stdio.StandardIO(commandLine.CommandLine(commands))
-reactor.run()
+    def stop(self):
+        reactor.stop()
