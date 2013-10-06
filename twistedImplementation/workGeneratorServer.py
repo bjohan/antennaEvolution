@@ -8,6 +8,7 @@ class WorkGeneratorServer(basic.LineReceiver):
         self.workGeneratorId = self.factory.getNewConnectionNumber()
         print "new work generator connected", self.workGeneratorId
         self.factory.clients.append(self)
+        self.factory.workUnitManager.checkBalance()
 
     def connectionLost(self, reason):
         print "Lost work generator"
@@ -20,6 +21,7 @@ class WorkGeneratorServer(basic.LineReceiver):
             print "Augmenting work unit data with work generator id"
             message['generator id'] = self.workGeneratorId
             self.factory.computeClientFactory.postWorkUnit(message)
+            self.requestedWorkUnits -= 1
         else:
             print "work generater sent something that is not a work unit:"
             print message
@@ -27,11 +29,20 @@ class WorkGeneratorServer(basic.LineReceiver):
     def message(self, message):
         self.sendLine(pickle.dumps(message))
 
+#    def requestWorkUnits(self, num):
+#        self.message({'request work units': 1})
+
 
 class WorkGeneratorServerFactory(protocol.ServerFactory):
     def __init__(self):
         self.connectionNumber = 0
         self.computeClientFactory = None
+        self.rrCounter = -1
+        self.requestedWorkUnits = 0
+        self.workUnitManager = None
+
+    def setWorkUnitManager(self, wum):
+        self.workUnitManager = wum
 
     def getNewConnectionNumber(self):
         n = self.connectionNumber
@@ -40,6 +51,13 @@ class WorkGeneratorServerFactory(protocol.ServerFactory):
 
     def setComputeClientFactory(self, factory):
         self.computeClientFactory = factory
+
+#    def requestWorkUnit(self):
+#        nClients = len(self.clients)
+#        if nClients > 0:
+#            self.rrCounter = (self.rrCounter + 1) % nClients
+#            self.clients[self.rrCounter].requestWorkUnits(1)
+#            self.requestedWorkUnits += 1
 
     def postResult(self, result):
         print "Returning result to work generator who created work unit"

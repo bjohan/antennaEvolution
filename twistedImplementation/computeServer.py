@@ -1,15 +1,16 @@
 from twisted.protocols import basic
 from twisted.internet import protocol
 import pickle
-computeNumber = 0
 
 
 class ComputeServer(basic.LineReceiver):
 
     def connectionMade(self):
+        self.workUnitsAtClient = 0
         self.computerId = self.factory.getNewConnectionNumber()
         print "new computer connected", self.computerId
         self.factory.clients.append(self)
+        self.factory.workUnitManager.newComputer(self)
 
     def connectionLost(self, reason):
         print "lost computer"
@@ -18,8 +19,9 @@ class ComputeServer(basic.LineReceiver):
     def lineReceived(self, line):
         message = pickle.loads(line)
         if 'result' in message:
-            message['number of clients'] = len(self.factory.clients)
-            self.factory.workGeneratorFactory.postResult(message)
+            self.returnResult(message)
+            #message['number of clients'] = len(self.factory.clients)
+            #self.factory.workGeneratorFactory.postResult(message)
         else:
             print "got something from compute client which is not a result:"
             print message
@@ -27,8 +29,18 @@ class ComputeServer(basic.LineReceiver):
     def message(self, message):
         self.sendLine(pickle.dumps(message))
 
+    def returnResult(self, result):
+        self.factory.workUnitManager.postResult(result)
+        self.workUnitsAtClient -= 1
+        try:
+            wu = self.factory.workUnitManager.getWorkUnitFromBuffer()
+            self.sendWorkUnit(wu)
+        except Exception, e:
+            print "Exception while getting new work unit:", e
+
     def sendWorkUnit(self, wu):
         print "Sending work unit", wu
+        self.workUnitsAtClient += 1
         self.message(wu)
 
 
@@ -37,6 +49,10 @@ class ComputeServerFactory(protocol.ServerFactory):
         self.connectionNumber = 0
         self.workGeneratorFactory = None
         self.computer = -1
+        self.workUnitManager = None
+
+    def setWorkUnitManager(self, wum):
+        self.workUnitManager = wum
 
     def getNewConnectionNumber(self):
         n = self.connectionNumber

@@ -15,6 +15,10 @@ class WorkGeneratorClientProtocol(LineReceiver):
     def lineReceived(self, line):
         message = pickle.loads(line)
         print "receive:", message
+        if 'request work units' in message:
+            units = message['request work units']
+            for i in range(units):
+                self.factory.sendWorkUnit()
 
     def disconnectWorkGeneratorClient(self):
         self.transport.loseConnection()
@@ -26,13 +30,23 @@ class WorkGeneratorClientProtocol(LineReceiver):
 class WorkGeneratorClientFactory(ClientFactory):
     protocol = WorkGeneratorClientProtocol
 
-    def __init__(self):
+    def __init__(self, generator, evaluator):
         self.clientConnection = None
+        self.generator = generator
+        self.evaluator = evaluator
+        self.wuId = 0
+
+    def sendWorkUnit(self):
+        if self.clientConnection is not None:
+            workUnit = {'work unit': self.generator()}
+            workUnit['work unit id'] = self.wuId
+            self.wuId += 1
+            self.clientConnection.message(workUnit)
 
 
 class WorkGeneratorClient:
     def __init__(self, serverHostName, port, generator, evaluator):
-        self.factory = WorkGeneratorClientFactory()
+        self.factory = WorkGeneratorClientFactory(generator, evaluator)
         reactor.connectTCP(serverHostName, port, self.factory)
 
     def run(self):
