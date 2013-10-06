@@ -17,9 +17,12 @@ class ComputeClientProtocol(LineReceiver):
     def lineReceived(self, line):
         message = pickle.loads(line)
         print "Got message:", message
-        if 'work unit' in message:
-            print "Got work unit, putting in worker queue"
-            self.factory.workerThread.q.put(message)
+        if message is not None:
+            if 'work unit' in message:
+                print "Got work unit, putting in worker queue"
+                self.factory.workerThread.q.put(message)
+        else:
+            print "Message was None something is not what it should be..."
 
     def disconnectComputeClient(self):
         self.transport.loseConnection()

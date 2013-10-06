@@ -20,8 +20,6 @@ class ComputeServer(basic.LineReceiver):
         message = pickle.loads(line)
         if 'result' in message:
             self.returnResult(message)
-            #message['number of clients'] = len(self.factory.clients)
-            #self.factory.workGeneratorFactory.postResult(message)
         else:
             print "got something from compute client which is not a result:"
             print message
@@ -33,6 +31,7 @@ class ComputeServer(basic.LineReceiver):
         self.factory.workUnitManager.postResult(result)
         self.workUnitsAtClient -= 1
         try:
+            self.factory.workUnitManager.requestWorkUnit()
             wu = self.factory.workUnitManager.getWorkUnitFromBuffer()
             self.sendWorkUnit(wu)
         except Exception, e:

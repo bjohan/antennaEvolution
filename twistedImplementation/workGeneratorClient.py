@@ -19,6 +19,8 @@ class WorkGeneratorClientProtocol(LineReceiver):
             units = message['request work units']
             for i in range(units):
                 self.factory.sendWorkUnit()
+        if 'result' in message:
+            self.factory.evaluator(message)
 
     def disconnectWorkGeneratorClient(self):
         self.transport.loseConnection()
@@ -42,6 +44,7 @@ class WorkGeneratorClientFactory(ClientFactory):
             workUnit['work unit id'] = self.wuId
             self.wuId += 1
             self.clientConnection.message(workUnit)
+            print "Work unit sent"
 
 
 class WorkGeneratorClient:

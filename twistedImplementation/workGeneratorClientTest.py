@@ -14,7 +14,7 @@ def workGenerator():
 
 
 def resultEvaluator(result):
-    print "Evaluating result"
+    print "Evaluating result", result
 
 commands = {"quit": myExit}
 

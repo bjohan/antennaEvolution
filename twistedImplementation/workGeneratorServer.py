@@ -9,6 +9,7 @@ class WorkGeneratorServer(basic.LineReceiver):
         print "new work generator connected", self.workGeneratorId
         self.factory.clients.append(self)
         self.factory.workUnitManager.checkBalance()
+        self.requestedWorkUnits = 0
 
     def connectionLost(self, reason):
         print "Lost work generator"
@@ -20,7 +21,8 @@ class WorkGeneratorServer(basic.LineReceiver):
             print "Received message is a work unit"
             print "Augmenting work unit data with work generator id"
             message['generator id'] = self.workGeneratorId
-            self.factory.computeClientFactory.postWorkUnit(message)
+            #self.factory.computeClientFactory.postWorkUnit(message)
+            self.factory.workUnitManager.bufferWorkUnit(message)
             self.requestedWorkUnits -= 1
         else:
             print "work generater sent something that is not a work unit:"
