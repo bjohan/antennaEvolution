@@ -92,18 +92,5 @@ class WorkUnitManager:
 
     def bufferWorkUnit(self, workUnit):
         self.requestedWorkUnits -= 1
-        if workUnit is None:
-            print "Got None Wu", 30 * "<>"
         print "BUFFERING", workUnit
         self.wuq.put(workUnit)
-
-    def __str__(self):
-        a = "WorkUnitManager has " + str(len(self.computers.clients))
-        a += " computer clients and " + str(len(self.generators.clients))
-        a += " generator clients.\n"
-        a += "the current approximate buferd amount of work is: "
-        a += str(self.wuq.qsize()) + " work units\n"
-        for c in self.computers.clients:
-            a += "\t client has " + str(c.workUnitsAtClient) + "work units\n"
-
-        return a
