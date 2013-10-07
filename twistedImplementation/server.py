@@ -2,7 +2,7 @@ import workGeneratorServer
 import computeServer
 import commandLine
 import workUnitManager
-from twisted.internet.task import LoopingCall
+#from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
 from twisted.internet import stdio
 
@@ -16,7 +16,17 @@ def requestWork(args):
     print "Sending work unit request"
     workGeneratorFactory.requestWorkUnit()
 
-commands = {"quit": myExit, "rw": requestWork}
+
+def checkBalance(args):
+    print "checking balance"
+    wuManager.checkBalance()
+
+
+def status(args):
+    print wuManager
+
+commands = {"quit": myExit, "rw": requestWork, "cb": checkBalance,
+            "st": status}
 
 
 #Work generator server
@@ -46,6 +56,6 @@ print "workGeneratorFactory", workGeneratorFactory
 reactor.listenTCP(0xbeef, computeFactory)
 reactor.listenTCP(0xdead, workGeneratorFactory)
 stdio.StandardIO(commandLine.CommandLine(commands))
-repeater = LoopingCall(wuManager.checkBalance)
-repeater.start(10)
+#repeater = LoopingCall(wuManager.checkBalance)
+#repeater.start(10)
 reactor.run()
