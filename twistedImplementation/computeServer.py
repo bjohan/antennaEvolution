@@ -39,8 +39,11 @@ class ComputeServer(basic.LineReceiver):
 
     def sendWorkUnit(self, wu):
         print "Sending work unit", wu
-        self.workUnitsAtClient += 1
-        self.message(wu)
+        if wu is None:
+            print 30 * '#"'
+        else:
+            self.workUnitsAtClient += 1
+            self.message(wu)
 
 
 class ComputeServerFactory(protocol.ServerFactory):
