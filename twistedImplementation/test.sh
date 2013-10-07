@@ -2,9 +2,9 @@ xterm -e "python server.py"&
 server_pid=$!
 sleep 0.2
 xterm -e "python computeClientTest.py"&
-compute_pid=$!
-xterm -e "python workGeneratorClientTest.py"&
-generator_pid=$!
+xterm -e "python computeClientTest.py"&
+xterm -e "python workGeneratorClientTest.py even"&
+xterm -e "python workGeneratorClientTest.py odd"&
 
 read -p "press enter to kill server and clients"
 ps aux | grep "python computeClientTest.py" | grep -v xterm | grep -v grep | cut -f1-2 | nawk {'print $2'} | xargs kill
