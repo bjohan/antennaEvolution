@@ -18,8 +18,8 @@ class WorkGeneratorServer(basic.LineReceiver):
     def lineReceived(self, line):
         message = pickle.loads(line)
         if 'work unit' in message:
-            print "Received message is a work unit"
-            print "Augmenting work unit data with work generator id"
+            #print "Received message is a work unit"
+            #print "Augmenting work unit data with work generator id"
             message['generator id'] = self.workGeneratorId
             #self.factory.computeClientFactory.postWorkUnit(message)
             self.factory.workUnitManager.bufferWorkUnit(message)
@@ -37,7 +37,7 @@ class WorkGeneratorServer(basic.LineReceiver):
 
 class WorkGeneratorServerFactory(protocol.ServerFactory):
     def __init__(self):
-        self.connectionNumber = 0
+        self.connectionNumber = 1000
         self.computeClientFactory = None
         self.rrCounter = -1
         self.requestedWorkUnits = 0
@@ -62,14 +62,19 @@ class WorkGeneratorServerFactory(protocol.ServerFactory):
 #            self.requestedWorkUnits += 1
 
     def postResult(self, result):
-        print "Returning result to work generator who created work unit"
+        #print "Returning result to work generator who created work unit"
         if 'result' in result:
             generatorId = result['generator id']
+            #print "Search start, there are:", len(self.clients), "generators"
             for client in self.clients:
+                #print "gen id is", client.workGeneratorId, "?", generatorId
                 if client.workGeneratorId == generatorId:
-                    print "Found client", generatorId, "sending result"
+                    #print "Found client", generatorId
                     client.message(result)
+                    break
+            else:
+                print "Work Generator", generatorId, "not found"
         else:
             print result
             print "the above data does not contain a result"
-        print "TODO implement post result"
+        #print "TODO implement post result"

@@ -33,14 +33,18 @@ class ComputeServer(basic.LineReceiver):
         try:
             self.factory.workUnitManager.requestWorkUnit()
             wu = self.factory.workUnitManager.getWorkUnitFromBuffer()
-            self.sendWorkUnit(wu)
+            if wu is None:
+                print "Got none from buffer"
+            else:
+                self.sendWorkUnit(wu)
+
         except Exception, e:
             print "Exception while getting new work unit:", e
 
     def sendWorkUnit(self, wu):
-        print "Sending work unit", wu
+        #print "Sending work unit", wu
         if wu is None:
-            print 30 * '#"'
+            print 30 * '#"', "Got empty work unit"
         else:
             self.workUnitsAtClient += 1
             self.message(wu)

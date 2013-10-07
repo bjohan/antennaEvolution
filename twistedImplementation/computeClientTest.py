@@ -2,6 +2,7 @@ import computeClient
 import commandLine
 #from twisted.internet import reactor
 from twisted.internet import stdio
+import time
 
 
 client = None
@@ -9,6 +10,7 @@ client = None
 
 def testWorkFunction(workUnit):
     print "Peforming work for", workUnit
+    print time.sleep(0.1)
     return "result"
 
 
@@ -18,7 +20,10 @@ def myExit(args):
     #reactor.stop()
 
 
-commands = {"quit": myExit}
+def status(args):
+    print client
+
+commands = {"quit": myExit, "st": status}
 stdio.StandardIO(commandLine.CommandLine(commands))
 
 

@@ -23,13 +23,13 @@ def myExit(args):
 def workGenerator():
     global nextJob
     global sentJobs
+    if nextJob > 10001:
+        print "All work done, returning None"
+        return None
     print "generating work"
     job = nextJob
     sentJobs.append(job)
     nextJob += inc
-    if nextJob > 100001:
-        while True:
-            pass
     return "work " + str(job)
 
 
@@ -56,3 +56,4 @@ client = workGeneratorClient.WorkGeneratorClient('localhost', 0xdead,
 
 stdio.StandardIO(commandLine.CommandLine(commands))
 client.run()
+input("Press enter to kill program")

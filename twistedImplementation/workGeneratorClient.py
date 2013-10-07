@@ -40,11 +40,13 @@ class WorkGeneratorClientFactory(ClientFactory):
 
     def sendWorkUnit(self):
         if self.clientConnection is not None:
-            workUnit = {'work unit': self.generator()}
-            workUnit['work unit id'] = self.wuId
-            self.wuId += 1
-            self.clientConnection.message(workUnit)
-            print "Work unit sent"
+            wu = self.generator()
+            if wu is not None:
+                workUnit = {'work unit': wu}
+                workUnit['work unit id'] = self.wuId
+                self.wuId += 1
+                self.clientConnection.message(workUnit)
+                print "Work unit sent"
 
 
 class WorkGeneratorClient:
