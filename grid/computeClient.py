@@ -1,20 +1,21 @@
 from twisted.internet.protocol import ClientFactory
-from twisted.protocols.basic import LineReceiver
+from twisted.protocols.basic import Int32StringReceiver
 from twisted.internet import reactor
 import threading
 import Queue
 import pickle
 
 
-class ComputeClientProtocol(LineReceiver):
+class ComputeClientProtocol(Int32StringReceiver):
     def connectionMade(self):
+        ComputeClientProtocol.MAX_LENGTH = 10e7
         self.factory.clientConnection = self
         self.message({'info': "Compute client"})
 
     def sendResult(self):
         self.message({'result': "Result from hard work"})
 
-    def lineReceived(self, line):
+    def stringReceived(self, line):
         message = pickle.loads(line)
         #print "Got message:", message
         if message is not None:
@@ -29,7 +30,7 @@ class ComputeClientProtocol(LineReceiver):
         self.transport.loseConnection()
 
     def message(self, message):
-        self.sendLine(pickle.dumps(message))
+        self.sendString(pickle.dumps(message))
 
 
 class ComputeClientFactory(ClientFactory):

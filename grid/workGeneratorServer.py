@@ -1,21 +1,25 @@
-from twisted.internet import protocol
-from twisted.protocols import basic
+from twisted.protocols.basic import Int32StringReceiver
+from twisted.internet.protocol import ServerFactory
 import pickle
 
 
-class WorkGeneratorServer(basic.LineReceiver):
+class WorkGeneratorServer(Int32StringReceiver):
     def connectionMade(self):
+        WorkGeneratorServer.MAX_LENGTH = 10e7
         self.workGeneratorId = self.factory.getNewConnectionNumber()
         print "new work generator connected", self.workGeneratorId
         self.factory.clients.append(self)
         self.factory.workUnitManager.checkBalance()
         self.requestedWorkUnits = 0
 
+    #def lengthLimitSceeded(self, length):
+    #    print "Length limit exceeded", length
+
     def connectionLost(self, reason):
         print "Lost work generator"
         self.factory.clients.remove(self)
 
-    def lineReceived(self, line):
+    def stringReceived(self, line):
         message = pickle.loads(line)
         if 'work unit' in message:
             #print "Received message is a work unit"
@@ -29,13 +33,13 @@ class WorkGeneratorServer(basic.LineReceiver):
             print message
 
     def message(self, message):
-        self.sendLine(pickle.dumps(message))
+        self.sendString(pickle.dumps(message))
 
 #    def requestWorkUnits(self, num):
 #        self.message({'request work units': 1})
 
 
-class WorkGeneratorServerFactory(protocol.ServerFactory):
+class WorkGeneratorServerFactory(ServerFactory):
     def __init__(self):
         self.connectionNumber = 1000
         self.computeClientFactory = None

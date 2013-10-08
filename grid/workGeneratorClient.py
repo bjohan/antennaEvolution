@@ -1,18 +1,19 @@
 from twisted.internet.protocol import ClientFactory
-from twisted.protocols.basic import LineReceiver
+from twisted.protocols.basic import Int32StringReceiver
 from twisted.internet import reactor
 import pickle
 
 
-class WorkGeneratorClientProtocol(LineReceiver):
+class WorkGeneratorClientProtocol(Int32StringReceiver):
     def connectionMade(self):
+        WorkGeneratorClientProtocol.MAX_LENGTH = 10e7
         self.factory.clientConnection = self
         self.message({'info': "Work generator client"})
 
     def sendWork(self):
         self.message({'work unit': "A piece of hard work"})
 
-    def lineReceived(self, line):
+    def stringReceived(self, line):
         message = pickle.loads(line)
         #print "receive:", message
         if 'request work units' in message:
@@ -26,7 +27,7 @@ class WorkGeneratorClientProtocol(LineReceiver):
         self.transport.loseConnection()
 
     def message(self, message):
-        self.sendLine(pickle.dumps(message))
+        self.sendString(pickle.dumps(message))
 
 
 class WorkGeneratorClientFactory(ClientFactory):

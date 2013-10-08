@@ -10,17 +10,21 @@ client = None
 
 
 def workFunction(workUnit):
-    necFileName = tempfile.mktemp() + '.nec'
-    resultFileName = tempfile.mktemp() + '.dat'
-    necFile = open(necFileName, 'w')
-    necFile.write(workUnit['nec code'])
-    necFile.close()
-    print "Starting nec simulation",
-    os.system("nec2c -i " + necFileName + " -o " + resultFileName)
-    print "Done"
-    rf = open(resultFileName, 'r')
-    result = rf.read()
-    rf.close()
+    try:
+        necFileName = tempfile.mktemp() + '.nec'
+        resultFileName = tempfile.mktemp() + '.dat'
+        necFile = open(necFileName, 'w')
+        necFile.write(workUnit['nec code'])
+        necFile.close()
+        print "Starting nec simulation",
+        os.system("nec2c -i " + necFileName + " -o " + resultFileName)
+        print "Done"
+        rf = open(resultFileName, 'r')
+        result = rf.read()
+        rf.close()
+    except Exception, e:
+        print "Exception in work function", e
+        result = None
     return result
 
 

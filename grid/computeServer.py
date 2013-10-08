@@ -1,22 +1,26 @@
-from twisted.protocols import basic
+from twisted.protocols.basic import Int32StringReceiver
 from twisted.internet import protocol
 import pickle
 
 
-class ComputeServer(basic.LineReceiver):
+class ComputeServer(Int32StringReceiver):
 
     def connectionMade(self):
+        ComputeServer.MAX_LENGTH = 10e7
         self.workUnitsAtClient = 0
         self.computerId = self.factory.getNewConnectionNumber()
         print "new computer connected", self.computerId
         self.factory.clients.append(self)
         self.factory.workUnitManager.newComputer(self)
 
+    #def lengthLimitSceeded(self, length):
+    #    print "Length limit exceeded", length
+
     def connectionLost(self, reason):
         print "lost computer"
         self.factory.clients.remove(self)
 
-    def lineReceived(self, line):
+    def stringReceived(self, line):
         message = pickle.loads(line)
         if 'result' in message:
             self.returnResult(message)
@@ -25,7 +29,7 @@ class ComputeServer(basic.LineReceiver):
             print message
 
     def message(self, message):
-        self.sendLine(pickle.dumps(message))
+        self.sendString(pickle.dumps(message))
 
     def returnResult(self, result):
         self.factory.workUnitManager.postResult(result)
