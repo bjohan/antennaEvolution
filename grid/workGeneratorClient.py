@@ -14,7 +14,7 @@ class WorkGeneratorClientProtocol(LineReceiver):
 
     def lineReceived(self, line):
         message = pickle.loads(line)
-        print "receive:", message
+        #print "receive:", message
         if 'request work units' in message:
             units = message['request work units']
             for i in range(units):

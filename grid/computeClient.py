@@ -16,7 +16,7 @@ class ComputeClientProtocol(LineReceiver):
 
     def lineReceived(self, line):
         message = pickle.loads(line)
-        print "Got message:", message
+        #print "Got message:", message
         if message is not None:
             if 'work unit' in message:
                 print "Got work unit, putting in worker queue"
