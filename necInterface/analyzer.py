@@ -40,8 +40,10 @@ class Analyzer:
                 powerMin = p
             if math.isnan(p):
                 print "Power is nan"
+                p = 0
             if math.isnan(g):
                 print "Gain is nan"
+                g = 0
             powerAvg+=p
             gainAvg+=g
             powerMax = max(powerMax, p)
@@ -53,9 +55,11 @@ class Analyzer:
             deltaPower = powerMax-powerMin
             gainAvg /= float(len(self.result.frequencies))
             powerAvg /= float(len(self.result.frequencies))
-            print "Power--> Avg:",powerAvg,"max:", powerMax, "min:", powerMin, "delta:", deltaPower
-            print "Gain--> Avg:",gainAvg,"max:", gainMax, "min:", gainMin, "delta:", deltaGain
+            #print "Power--> Avg:",powerAvg,"max:", powerMax, "min:", powerMin, "delta:", deltaPower
+            #print "Gain--> Avg:",gainAvg,"max:", gainMax, "min:", gainMin, "delta:", deltaGain
             fom = powerMax*gainMax/(1.0+abs(deltaPower*deltaGain))
+            #if (gainMax < -990) or (gainMin < 990):
+            #    fom  = -667
             #print "Figure of merit:", fom
             return fom
         except Exception, e:
