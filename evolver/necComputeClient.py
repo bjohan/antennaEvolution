@@ -22,6 +22,8 @@ def workFunction(workUnit):
         rf = open(resultFileName, 'r')
         result = rf.read()
         rf.close()
+        os.remove(necFileName)
+        os.remove(resultFileName)
     except Exception, e:
         print "Exception in work function", e
         result = None

@@ -4,7 +4,7 @@ from twisted.internet import reactor
 import threading
 import Queue
 import pickle
-
+import logo
 
 class ComputeClientProtocol(Int32StringReceiver):
     def connectionMade(self):
@@ -80,6 +80,7 @@ class ComputeClient:
         reactor.connectTCP('localhost', port, self.factory)
 
     def run(self):
+        print logo.logo
         print "Starting reactor"
         reactor.run()
 

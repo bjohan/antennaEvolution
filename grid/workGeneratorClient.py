@@ -2,7 +2,7 @@ from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import Int32StringReceiver
 from twisted.internet import reactor
 import pickle
-
+import logo
 
 class WorkGeneratorClientProtocol(Int32StringReceiver):
     def connectionMade(self):
@@ -47,7 +47,7 @@ class WorkGeneratorClientFactory(ClientFactory):
                 workUnit['work unit id'] = self.wuId
                 self.wuId += 1
                 self.clientConnection.message(workUnit)
-                print "Work unit sent"
+                #print "Work unit sent"
 
 
 class WorkGeneratorClient:
@@ -56,6 +56,7 @@ class WorkGeneratorClient:
         reactor.connectTCP(serverHostName, port, self.factory)
 
     def run(self):
+        print logo.logo
         reactor.run()
 
     def stop(self):

@@ -7,6 +7,7 @@ from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
 from twisted.internet import stdio
 import twisted
+import logo
 
 twisted.python.log.startLogging(sys.stderr)
 
@@ -59,4 +60,5 @@ reactor.listenTCP(0xdead, workGeneratorFactory)
 stdio.StandardIO(commandLine.CommandLine(commands))
 repeater = LoopingCall(wuManager.checkBalance)
 repeater.start(10)
+print logo.logo
 reactor.run()
