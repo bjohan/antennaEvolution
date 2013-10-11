@@ -33,9 +33,13 @@ def populationStatus(args):
     print population
 
 
+def show(args):
+    population.showAntenna(0)
+
 population = rollingPopulation.RollingPopulation(200, band2m, 0.04, 4, 21)
 
-commands = {"quit": myExit, 'st': status, 'ps': populationStatus}
+commands = {"quit": myExit, 'st': status, 'ps': populationStatus,
+            'sh': show}
 
 client = grid.workGeneratorClient.WorkGeneratorClient('localhost', 0xdead,
                                                       population.getNewIndividualAsJob,

@@ -7,7 +7,7 @@ class WorkGeneratorServer(Int32StringReceiver):
     def connectionMade(self):
         WorkGeneratorServer.MAX_LENGTH = 10e7
         self.workGeneratorId = self.factory.getNewConnectionNumber()
-        print "new work generator connected", self.workGeneratorId
+        #print "new work generator connected", self.workGeneratorId
         self.factory.clients.append(self)
         self.factory.workUnitManager.checkBalance()
         self.requestedWorkUnits = 0
@@ -28,9 +28,9 @@ class WorkGeneratorServer(Int32StringReceiver):
             #self.factory.computeClientFactory.postWorkUnit(message)
             self.factory.workUnitManager.bufferWorkUnit(message)
             self.requestedWorkUnits -= 1
-        else:
-            print "work generater sent something that is not a work unit:"
-            print message
+        #else:
+        #    print "work generater sent something that is not a work unit:"
+        #    print message
 
     def message(self, message):
         self.sendString(pickle.dumps(message))

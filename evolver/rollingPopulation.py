@@ -7,6 +7,7 @@ import necInterface.necFileParser
 import necInterface.analyzer
 import necInterface.simulationResult
 import random
+import tempfile
 
 
 class RollingPopulation():
@@ -45,12 +46,25 @@ class RollingPopulation():
         self.unevaluatedPopulation.append({'job': job, 'ant': a})
         return job
 
+    def showAntenna(self, antNum):
+        if antNum >= len(self.population):
+            print "No such antenna"
+            return
+        fn = tempfile.mktemp() + '.dat'
+        fh = open(fn, 'w')
+        fh.write(self.population[antNum].necResult)
+        fh.close()
+        os.spawnl(os.P_NOWAIT, '/usr/bin/xnecview ' + fn)
+
+
     def putResultInPopulation(self, result, fom):
         for i in self.unevaluatedPopulation:
             if i['job']['antenna id'] == result['work unit']['antenna id']:
                 self.unevaluatedPopulation.remove(i)
                 a = i['ant']
                 a.fom = fom
+                #a.necCode = result['job']['nec code']
+                a.necResult = result['result']
                 self.population.append(a)
                 self.population = sorted(self.population)
                 self.population.reverse()

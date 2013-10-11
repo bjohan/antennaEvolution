@@ -9,7 +9,7 @@ class ComputeServer(Int32StringReceiver):
         ComputeServer.MAX_LENGTH = 10e7
         self.workUnitsAtClient = 0
         self.computerId = self.factory.getNewConnectionNumber()
-        print "new computer connected", self.computerId
+        #print "new computer connected", self.computerId
         self.factory.clients.append(self)
         self.factory.workUnitManager.newComputer(self)
 
@@ -24,9 +24,9 @@ class ComputeServer(Int32StringReceiver):
         message = pickle.loads(line)
         if 'result' in message:
             self.returnResult(message)
-        else:
-            print "got something from compute client which is not a result:"
-            print message
+        #else:
+        #    print "got something from compute client which is not a result:"
+        #    print message
 
     def message(self, message):
         self.sendString(pickle.dumps(message))

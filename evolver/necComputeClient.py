@@ -16,9 +16,9 @@ def workFunction(workUnit):
         necFile = open(necFileName, 'w')
         necFile.write(workUnit['nec code'])
         necFile.close()
-        print "Starting nec simulation",
+        #print "Starting nec simulation",
         os.system("nec2c -i " + necFileName + " -o " + resultFileName)
-        print "Done"
+        #print "Done"
         rf = open(resultFileName, 'r')
         result = rf.read()
         rf.close()

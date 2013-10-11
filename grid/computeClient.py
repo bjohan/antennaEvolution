@@ -20,9 +20,9 @@ class ComputeClientProtocol(Int32StringReceiver):
         #print "Got message:", message
         if message is not None:
             if 'work unit' in message:
-                print "Got work unit, putting in worker queue"
+                #print "Got work unit, putting in worker queue"
                 self.factory.workerThread.q.put(message)
-                print self.factory.workerThread.q.qsize(), "jobs left"
+                #print self.factory.workerThread.q.qsize(), "jobs left"
         else:
             print "Message was None something is not what it should be..."
 
@@ -59,9 +59,9 @@ class WorkerThread(threading.Thread):
     def run(self):
         print "Worker thread is running"
         while True:
-            print "Worker thread is waiting for a job"
+            #print "Worker thread is waiting for a job"
             work = self.q.get()
-            print "Got a job", self.q.qsize(), "jobs left"
+            #print "Got a job", self.q.qsize(), "jobs left"
             if 'stop' in work:
                 print "Received stop instruction"
                 break

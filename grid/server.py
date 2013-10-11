@@ -2,14 +2,14 @@ import workGeneratorServer
 import computeServer
 import commandLine
 import workUnitManager
-import sys
+#import sys
 from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
 from twisted.internet import stdio
-import twisted
+#import twisted
 import logo
 
-twisted.python.log.startLogging(sys.stderr)
+#twisted.python.log.startLogging(sys.stderr)
 
 
 def myExit(args):
