@@ -44,6 +44,9 @@ class Analyzer:
             if math.isnan(g):
                 print "Gain is nan"
                 g = 0
+            if g < -990:
+                print "gain:", g
+                return -1000
             powerAvg+=p
             gainAvg+=g
             powerMax = max(powerMax, p)

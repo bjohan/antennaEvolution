@@ -34,7 +34,11 @@ def populationStatus(args):
 
 
 def show(args):
-    population.showAntenna(0)
+    if len(args) == 2:
+        n = int(args[1])
+    else:
+        n = 0
+    population.showAntenna(n)
 
 population = rollingPopulation.RollingPopulation(200, band2m, 0.04, 4, 21)
 
