@@ -35,8 +35,8 @@ class FrequencyResult:
 				return p
 		else:
 			print "No radiation point for azi:", azimuth, "ele:", elevation
-	
-	def getGridByKey(self, key):	
+
+	def getGridByKey(self, key):
 		eles = self.getElevationGrid()
 		azis = self.getAzimuthGrid()
 		grid = [];
@@ -53,11 +53,11 @@ class FrequencyResult:
 
 
 	def getFrontalGain(self):
-		return self.getRadiationPatternPoint(0.0,0.0)['major db']
+		return self.getRadiationPatternPoint(0.0,0.0)['total db']
 
 	def getRadiatedPower(self):
 		return self.impedance['power']
-		
+
 class SimulationResult:
 	def __init__(self):
 		self.frequencies = []

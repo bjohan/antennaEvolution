@@ -69,8 +69,8 @@ class NecFileParser:
                 d = {}
                 d['elevation'] = float(tokens[0])-90.0
                 d['azimuth'] = float(tokens[1])
-                d['major db'] = float(tokens[2])
-                d['minor db'] = float(tokens[3])
+                d['vertc db'] = float(tokens[2])
+                d['horiz db'] = float(tokens[3])
                 d['total db'] = float(tokens[4])
                 d['axial ratio'] = float(tokens[5])
                 d['tilt degrees'] = float(tokens[6])
