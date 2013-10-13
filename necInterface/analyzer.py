@@ -30,8 +30,11 @@ class Analyzer:
         powerAvg = 0
         gainAvg = 0
         for f in self.result.frequencies:
+            swr = f.getStandingWaveRatio()
+            if swr < 0:
+                return -1001
             g = f.getFrontalGain()
-            p = f.getRadiatedPower()
+            p = f.getMismatchLoss()
             if gainMax == None:
                 gainMax = g
                 gainMin = g
