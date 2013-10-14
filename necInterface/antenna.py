@@ -26,7 +26,7 @@ class Antenna(individual.Individual):
         fg.geometryEnd()
         fg.end()
         fg.frequency(band.start, band.stop, steps)
-        fg.radiationPattern(-180, 180, 21, 0, 180, 21)
+        fg.radiationPattern(-180, 180, 101, 0, 180, 101)
         return str(fg)
 
     def randomInit(self):

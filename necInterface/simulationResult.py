@@ -1,5 +1,6 @@
 import math
 
+
 class FrequencyResult:
     def __init__(self):
         self.frequency = None
@@ -33,7 +34,7 @@ class FrequencyResult:
 
     def getRadiationPatternPoint(self, azimuth, elevation):
         for p in self.radiationPattern:
-            if p['elevation']==elevation and p['azimuth']==azimuth:
+            if p['elevation'] == elevation and p['azimuth'] == azimuth:
                 return p
         else:
             print "No radiation point for azi:", azimuth, "ele:", elevation
@@ -41,7 +42,7 @@ class FrequencyResult:
     def getGridByKey(self, key):
         eles = self.getElevationGrid()
         azis = self.getAzimuthGrid()
-        grid = [];
+        grid = []
         for ele in eles:
             aziLine = []
             for azi in azis:
@@ -53,9 +54,8 @@ class FrequencyResult:
     def getMajorDbGrid(self):
         return self.getGridByKey('major db')
 
-
     def getFrontalGain(self):
-        return self.getRadiationPatternPoint(0.0,0.0)['total db']
+        return self.getRadiationPatternPoint(0.0, 0.0)['total db']
 
     def getRadiatedPower(self):
         return self.impedance['power']
@@ -65,25 +65,26 @@ class FrequencyResult:
         zli = self.impedance['impedance imaginary']
         return complex(zlr, zli)
 
-
-    def getLoadLambda(self, z0r = 50):
-        z0 = complex(z0r,0)
+    def getLoadLambda(self, z0r=50):
+        z0 = complex(z0r, 0)
         zl = self.getImpedance()
         L = (zl - z0) / (zl + z0)
         return L
 
-    def getStandingWaveRatio(self, z0r = 50):
+    def getStandingWaveRatio(self, z0r=50):
         rho = abs(self.getLoadLambda(z0r))
-        swr = (1 + rho) / (1 - rho)
+        if (rho > 0) and (rho < 1):
+            swr = (1 + rho) / (1 - rho)
+        else:
+            return -1
         #print "Z0:", z0, "ZL:", zl, "Lamda:", L, "rho:", rho, "swr:", swr
         return swr
 
-    def getReturnLoss(self, z0r = 50):
-            return -20*math.log10(abs(self.getLoadLambda(z0r)))
+    def getReturnLoss(self, z0r=50):
+            return -20 * math.log10(abs(self.getLoadLambda(z0r)))
 
-
-    def getMismatchLoss(self, z0r = 50):
-        return -10*math.log10(1-abs(self.getLoadLambda(z0r))**2)
+    def getMismatchLoss(self, z0r=50):
+        return -10 * math.log10(1 - abs(self.getLoadLambda(z0r)) ** 2)
 
 
 class SimulationResult:
@@ -94,8 +95,9 @@ class SimulationResult:
         self.frequencies.append(f)
 
     def append(self, simulationResult):
-        self.frequencies+=simulationResult.frequencies
+        self.frequencies += simulationResult.frequencies
 
     def __str__(self):
-        s= "Simulation result for "+str(len(self.frequencies))+" frequencies"
+        s = "Simulation result for " + str(len(self.frequencies)) +\
+            " frequencies"
         return s

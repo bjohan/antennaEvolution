@@ -40,7 +40,7 @@ def show(args):
         n = 0
     population.showAntenna(n)
 
-population = rollingPopulation.RollingPopulation(200, band2m, 0.04, 4, 21)
+population = rollingPopulation.RollingPopulation(1000, band2m, 0.04, 4, 21)
 
 commands = {"quit": myExit, 'st': status, 'ps': populationStatus,
             'sh': show}

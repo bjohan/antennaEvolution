@@ -34,7 +34,7 @@ class Analyzer:
             if swr < 0:
                 return -1001
             g = f.getFrontalGain()
-            p = f.getMismatchLoss()
+            p = -f.getMismatchLoss()
             if gainMax == None:
                 gainMax = g
                 gainMin = g
@@ -63,7 +63,7 @@ class Analyzer:
             powerAvg /= float(len(self.result.frequencies))
             #print "Power--> Avg:",powerAvg,"max:", powerMax, "min:", powerMin, "delta:", deltaPower
             #print "Gain--> Avg:",gainAvg,"max:", gainMax, "min:", gainMin, "delta:", deltaGain
-            fom = powerMax*gainMax/(1.0+abs(deltaPower*deltaGain))
+            fom = (powerAvg+gainAvg) #/(1.0+abs(deltaPower*deltaGain))
             #if (gainMax < -990) or (gainMin < 990):
             #    fom  = -667
             #print "Figure of merit:", fom
