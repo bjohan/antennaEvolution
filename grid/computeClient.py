@@ -5,6 +5,8 @@ import threading
 import Queue
 import pickle
 import logo
+import time
+
 
 class ComputeClientProtocol(Int32StringReceiver):
     def connectionMade(self):
@@ -37,12 +39,23 @@ class ComputeClientFactory(ClientFactory):
     protocol = ComputeClientProtocol
 
     def __init__(self, workerThread):
+        self.startTime = time.time()
+        self.completedWorkUnits = 0.0
         self.clientConnection = None
         self.workerThread = workerThread
 
     def postResult(self, result):
         if self.clientConnection is not None:
+            self.completedWorkUnits += 1
             self.clientConnection.message(result)
+
+    def __str__(self):
+        totTime = time.time() - self.startTime
+        f = self.completedWorkUnits / totTime
+        a = "Client has been running for %d seconds " % (totTime)
+        a += "%d work units completed" % (self.completedWorkUnits)
+        a += "at %f Hz" % (f)
+        return a
 
 
 class WorkerThread(threading.Thread):
