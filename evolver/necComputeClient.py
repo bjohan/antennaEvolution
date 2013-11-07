@@ -42,8 +42,11 @@ def status(args):
 commands = {"quit": myExit, "st": status}
 stdio.StandardIO(grid.commandLine.CommandLine(commands))
 
-
-client = grid.computeClient.ComputeClient('localhost', 0xbeef, workFunction)
+if len(sys.argv) > 2:
+    hostname = sys.argv[1]
+else:
+    hostname = 'localhost'
+client = grid.computeClient.ComputeClient(hostname, 0xbeef, workFunction)
 #The client.run() calls the reactor.run() so it does not return until it
 # the reactor is stopped
 client.run()
