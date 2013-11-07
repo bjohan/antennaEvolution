@@ -90,7 +90,7 @@ class ComputeClient:
         self.workerThread = WorkerThread(workFunction)
         self.factory = ComputeClientFactory(self.workerThread)
         self.workerThread.setFactory(self.factory)
-        reactor.connectTCP('localhost', port, self.factory)
+        reactor.connectTCP(serverHostName, port, self.factory)
 
     def run(self):
         print logo.logo
