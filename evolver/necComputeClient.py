@@ -42,7 +42,7 @@ def status(args):
 commands = {"quit": myExit, "st": status}
 stdio.StandardIO(grid.commandLine.CommandLine(commands))
 
-if len(sys.argv) > 2:
+if len(sys.argv) >= 2:
     hostname = sys.argv[1]
 else:
     hostname = 'localhost'

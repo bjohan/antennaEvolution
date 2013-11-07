@@ -44,6 +44,9 @@ class ComputeClientFactory(ClientFactory):
         self.clientConnection = None
         self.workerThread = workerThread
 
+    def clientConnectionFailed(self, connector, reason):
+        print "Connection failed", reason
+
     def postResult(self, result):
         if self.clientConnection is not None:
             self.completedWorkUnits += 1
@@ -90,6 +93,7 @@ class ComputeClient:
         self.workerThread = WorkerThread(workFunction)
         self.factory = ComputeClientFactory(self.workerThread)
         self.workerThread.setFactory(self.factory)
+        print "Connecting to", serverHostName
         reactor.connectTCP(serverHostName, port, self.factory)
 
     def run(self):
